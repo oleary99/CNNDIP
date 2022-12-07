@@ -1,19 +1,22 @@
 import csv
 
 def main():
+    trials = 10
+    test = 7
     f = open("Models.csv","r")
-    Lines = f.readlines()
+
     count =0
     DataCsv = []
     name = ""
+    dataset = -1
+    Lines = f.readlines()
     f = open('Cleaned.csv','w')
     writer = csv.writer(f)
-    dataset = -1
     for line in Lines:
         if count% 12 == 1:
             name = line
             dataset +=1
-            if dataset > 6:
+            if dataset > test-1:
                 dataset = 0
         #get loss accuracy and val loss and accuracy
         if ( count %2 ==1 and count %12 >2):
@@ -48,7 +51,7 @@ def main():
                     DataCsv[Data][i-1]/=10
                 DataCsv[Data] = list(map(lambda x: round(x,3),list(map(float,DataCsv[Data]))))
             else:
-                DataCsv[Data][0]/=10
+                DataCsv[Data][0]/=trials
             DataCsv[Data].insert(0,tmpname)
         #except:
          #   print("empty row")
