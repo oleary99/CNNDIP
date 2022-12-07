@@ -10,6 +10,7 @@ import csv
 import time
 
 def setup_threads():
+
   num_threads = 12
   os.environ["OMP_NUM_THREADS"] = "12"
   os.environ["TF_NUM_INTRAOP_THREADS"] = "12"
