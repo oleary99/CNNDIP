@@ -106,7 +106,11 @@ def graph_history(history):
 def collect_data(history):
   f = open('Models.csv','a')
   writer = csv.writer(f)
-  writer.writerow(['Loss'].append(history.history['loss']))
+  print(history.history)
+  writer.writerow(['Loss']+ history.history['loss'])
+  writer.writerow(['Accuracy']+ history.history['sparse_categorical_accuracy'])
+  writer.writerow(['Val_Loss']+ history.history['val_loss'])
+  writer.writerow(['Val_Accuracy']+ history.history['val_sparse_categorical_accuracy'])
   f.close()
   print(history.history)
 def setup_csv():
@@ -131,7 +135,7 @@ def run_model(activation,title):
   #graph_history(history)
 
 def main():
-  #setup_csv()
+  setup_csv()
   run_model(sigmoid_model,'Sigmoid')
   run_model(relu_model,'Relu')
   
