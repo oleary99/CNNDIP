@@ -87,6 +87,120 @@ def sigmoid_model():
       tf.keras.layers.Dense(4, activation='softmax')
   ]
   )
+def selu_model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="selu",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="selu"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
+def gelu_model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="gelu",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="gelu"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
+def tanh_model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="tanh",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="tanh"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
+def linear_model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="linear",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="linear"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
+def hard_sigmoid_model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="hard_sigmoid",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="hard_sigmoid"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
+def _model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="relu",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="selu"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
 
 def compile_model(model,training_set,validation_set,epochs):
   model.compile(optimizer='adam',
@@ -138,9 +252,10 @@ def main():
   setup_csv()
   run_model(sigmoid_model,'Sigmoid')
   run_model(relu_model,'Relu')
-  
-  
-  
-
+  run_model(selu_model,'Selu')
+  run_model(gelu_model,'Gelu')
+  run_model(tanh_model,'Tanh')
+  run_model(linear_model,'Linear')
+  run_model(hard_sigmoid_model,'Hard_Sigmoid')
   
 main()
