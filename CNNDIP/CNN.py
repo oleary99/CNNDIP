@@ -6,6 +6,7 @@ import matplotlib.image as mpimg
 import PIL.Image as im
 import os
 
+import csv
 
 def setup_threads():
   num_threads = 12
@@ -56,9 +57,9 @@ def relu_model():
       #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
       tf.keras.layers.MaxPooling2D((2, 2), strides=2),
 
-      tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
       #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
-      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
 
       tf.keras.layers.Flatten(),
       tf.keras.layers.Dense(50, activation="relu"),
@@ -66,6 +67,27 @@ def relu_model():
       tf.keras.layers.Dense(4, activation='softmax')
   ]
   )
+
+def sigmoid_model():
+  return tf.keras.Sequential(
+      [
+      #data_augmentation,
+      tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="relu",input_shape=(32, 32, 3)),
+      #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
+      tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same', activation="relu"),
+      #tf.keras.layers.Conv2D(64, (3,3), padding='same'),
+      #tf.keras.layers.MaxPooling2D((2, 2), strides=2),
+
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(50, activation="sigmoid"),
+      tf.keras.layers.Dropout(0.2),
+      tf.keras.layers.Dense(4, activation='softmax')
+  ]
+  )
+
 def compile_model(model,training_set,validation_set,epochs):
   model.compile(optimizer='adam',
                 loss=tf.keras.losses.SparseCategoricalCrossentropy(),
@@ -81,14 +103,40 @@ def graph_history(history):
   plt.xlabel('Epoch')
   plt.ylabel('Loss')
   plt.show();
-
-def main():
+def collect_data(history):
+  f = open('Models.csv','a')
+  writer = csv.writer(f)
+  writer.writerow(['Loss'].append(history.history['loss']))
+  f.close()
+  print(history.history)
+def setup_csv():
+  f = open('Models.csv','w')
+  writer = csv.writer(f)
+  writer.writerow(['Loss','Accuracy','Validation Loss','Validation Accuracy'])
+  f.close()
+def title_csv(Title):
+  f= open('Models.csv', 'a')
+  writer = csv.writer(f)
+  writer.writerow([Title])
+def run_model(activation,title):
   setup_threads()
   training_set = setup_training()
   validation_set = setup_validation()
   setup_layer()
-  model = relu_model()
-  history = compile_model(model,training_set,validation_set,10)
-  graph_history(history)
+  #model = relu_model()
+  model = activation()
+  history = compile_model(model,training_set,validation_set,2)
+  title_csv(title)
+  collect_data(history)
+  #graph_history(history)
+
+def main():
+  #setup_csv()
+  run_model(sigmoid_model,'Sigmoid')
+  run_model(relu_model,'Relu')
+  
+  
+  
+
   
 main()
