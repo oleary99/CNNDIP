@@ -7,6 +7,7 @@ import PIL.Image as im
 import os
 
 import csv
+import time
 
 def setup_threads():
   num_threads = 12
@@ -92,7 +93,7 @@ def selu_model():
       [
       #data_augmentation,
       tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
-      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="selu",input_shape=(32, 32, 3)),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="relu",input_shape=(32, 32, 3)),
       #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
       tf.keras.layers.MaxPooling2D((2, 2), strides=2),
 
@@ -111,7 +112,7 @@ def gelu_model():
       [
       #data_augmentation,
       tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
-      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="gelu",input_shape=(32, 32, 3)),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="relu",input_shape=(32, 32, 3)),
       #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
       tf.keras.layers.MaxPooling2D((2, 2), strides=2),
 
@@ -130,7 +131,7 @@ def tanh_model():
       [
       #data_augmentation,
       tf.keras.layers.experimental.preprocessing.Rescaling(1/255),
-      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="tanh",input_shape=(32, 32, 3)),
+      tf.keras.layers.Conv2D(32, (3,3), padding='same', activation="relu",input_shape=(32, 32, 3)),
       #tf.keras.layers.Conv2D(32, (3,3), padding='same', input_shape=(32, 32, 3)),
       tf.keras.layers.MaxPooling2D((2, 2), strides=2),
 
@@ -217,10 +218,13 @@ def graph_history(history):
   plt.xlabel('Epoch')
   plt.ylabel('Loss')
   plt.show();
-def collect_data(history):
+def collect_data(history,start):
   f = open('Models.csv','a')
   writer = csv.writer(f)
-  print(history.history)
+  #print(history.history)
+  end = time.time()
+  
+  writer.writerow(['Over All Time', end - start])
   writer.writerow(['Loss']+ history.history['loss'])
   writer.writerow(['Accuracy']+ history.history['sparse_categorical_accuracy'])
   writer.writerow(['Val_Loss']+ history.history['val_loss'])
@@ -236,26 +240,34 @@ def title_csv(Title):
   f= open('Models.csv', 'a')
   writer = csv.writer(f)
   writer.writerow([Title])
+  f.close()
 def run_model(activation,title):
+  print(title+"\n")
+  start = time.time()
   setup_threads()
   training_set = setup_training()
   validation_set = setup_validation()
   setup_layer()
   #model = relu_model()
   model = activation()
-  history = compile_model(model,training_set,validation_set,2)
+  history = compile_model(model,training_set,validation_set,10)
   title_csv(title)
-  collect_data(history)
+  collect_data(history,start)
   #graph_history(history)
 
 def main():
   setup_csv()
-  run_model(sigmoid_model,'Sigmoid')
-  run_model(relu_model,'Relu')
-  run_model(selu_model,'Selu')
-  run_model(gelu_model,'Gelu')
-  run_model(tanh_model,'Tanh')
-  run_model(linear_model,'Linear')
-  run_model(hard_sigmoid_model,'Hard_Sigmoid')
+  for i in range(10):
+    f= open('Models.csv', 'a')
+    writer = csv.writer(f)
+    writer.writerow(['Try',i])
+    f.close()
+    run_model(sigmoid_model,'Sigmoid')
+    run_model(relu_model,'Relu')
+    run_model(selu_model,'Selu')
+    run_model(gelu_model,'Gelu')
+    run_model(tanh_model,'Tanh')
+    run_model(linear_model,'Linear')
+    run_model(hard_sigmoid_model,'Hard_Sigmoid')
   
 main()
